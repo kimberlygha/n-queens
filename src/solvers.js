@@ -18,7 +18,7 @@
 window.findNRooksSolution = function(n) {
   var solution = new Board({'n':n});
   // declare board to solution.rows
-  var board = solution.rows(); 
+  var board = solution.rows();
   // iterate over board.length - equivalent to n 
   for(var i=0; i <n; i++){
     // iterate over the columns in the row 
@@ -28,12 +28,12 @@ window.findNRooksSolution = function(n) {
         // if no col conflicts 
       if(!solution.hasColConflictAt(j)){
         // return 
-        break; 
+        break;
       }else{
         // else toggle back 
-        solution.togglePiece(i,j)
+        solution.togglePiece(i,j);
       }
-    } 
+    }
   }
 
   // console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
@@ -44,14 +44,14 @@ window.findNRooksSolution = function(n) {
 window.countNRooksSolutions = function(n) {
   var solution = new Board({'n':n});
   // declare a counter variable 
-  var solutionCount = 0; 
+  var solutionCount = 0;
   // declare a function that takes in an array of indices 
   var getRookSolution = function(arr){
 
     // if the array.length is 0
     if(arr.length === 0){
       // increment counter
-      solutionCount++; 
+      solutionCount++;
     }else{
     // else
       // iterate over the array that is passed 
@@ -62,7 +62,7 @@ window.countNRooksSolutions = function(n) {
         getRookSolution(newArr);
       }
     }
-  }
+  };
   // call inner function with array with range 0-(n-1);
   getRookSolution(_.range(0,n));
   //return counter variable; 
@@ -73,10 +73,10 @@ window.countNRooksSolutions = function(n) {
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
 window.findNQueensSolution = function(n) {
-  var solution = new Board({'n':n}); 
+  var solution = new Board({'n':n});
   // declare a variable for currentRow
   // create an array to hold key value pairs 
-  var stack = []; 
+  var stack = [];
   var state = false;
 
   // create an inner function to get solution 
@@ -84,8 +84,8 @@ window.findNQueensSolution = function(n) {
     // if array length is 0  
     if(arr.length === 0){
       // return the board
-      return; 
-    };
+      return;
+    }
     // iterate over the array that is passed 
     for(var i=0; i<arr.length; i++){
       // debugger;
@@ -96,12 +96,12 @@ window.findNQueensSolution = function(n) {
         //declare splice variable
         var newArr = arr.slice(0,i).concat(arr.slice(i+1));
         if(newArr.length === 0){
-          state = true; 
+          state = true;
         }
         // make touple [currentRow,arr[i]] and push to stack 
         stack.push([currentRow,arr[i]]);
         // recursively call on the spliced array  
-        getQueenSolution(newArr,currentRow+1); 
+        getQueenSolution(newArr,currentRow+1);
       }else{
         // debugger; 
         solution.togglePiece(currentRow,arr[i]);
@@ -114,9 +114,9 @@ window.findNQueensSolution = function(n) {
       var previous = stack.pop();
       if(previous){
       solution.togglePiece(previous[0],previous[1]);
-      }  
+      }
     }
-  }
+  };
   // create a range from 0 to n 
   var range = _.range(0,n);
   // call the function 
@@ -127,20 +127,20 @@ window.findNQueensSolution = function(n) {
 
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
 window.countNQueensSolutions = function(n) {
-    var solution = new Board({'n':n}); 
+    var solution = new Board({'n':n});
     // debugger;
   // declare a variable for currentRow
   // create an array to hold key value pairs 
-  var queenStack = []; 
+  var queenStack = [];
   var solutionCount =0;
-
+  if(n === 0) { return 1; }
   // create an inner function to get solution 
   var getQueenCountSolution = function(arr,currentRow){
     // if array length is 0  
     if(arr.length === 0){
       // return the board
-      return; 
-    };
+      return;
+    }
     // iterate over the array that is passed 
     for(var i=0; i<arr.length; i++){
       // debugger;
@@ -152,13 +152,13 @@ window.countNQueensSolutions = function(n) {
         var newArr = arr.slice(0,i).concat(arr.slice(i+1));
         if(newArr.length === 0){
           solutionCount++;
-          console.log(solution.rows())
-          solution.togglePiece(currentRow,arr[i]); 
+          solution.togglePiece(currentRow,arr[i]);
+          continue;
         }
         // make touple [currentRow,arr[i]] and push to stack 
         queenStack.push([currentRow,arr[i]]);
         // recursively call on the spliced array  
-        getQueenCountSolution(newArr,currentRow+1); 
+        getQueenCountSolution(newArr,currentRow+1);
       }else{
         // debugger; 
         solution.togglePiece(currentRow,arr[i]);
@@ -171,9 +171,9 @@ window.countNQueensSolutions = function(n) {
       var previous = queenStack.pop();
       if(previous){
       solution.togglePiece(previous[0],previous[1]);
-      }  
+      }
     }
-  }
+  };
   // create a range from 0 to n 
   var queenRange = _.range(0,n);
   // call the function 
