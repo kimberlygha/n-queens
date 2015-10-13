@@ -36,7 +36,7 @@ window.findNRooksSolution = function(n) {
     } 
   }
 
-  console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
+  // console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution.rows();
 };
 
@@ -67,7 +67,7 @@ window.countNRooksSolutions = function(n) {
   getRookSolution(_.range(0,n));
   //return counter variable; 
 
-  console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
+  // console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
 };
 
@@ -81,9 +81,6 @@ window.findNQueensSolution = function(n) {
 
   // create an inner function to get solution 
   var getQueenSolution = function(arr,currentRow){
-  if(n === 2){
-    // debugger;
-  }
     // if array length is 0  
     if(arr.length === 0){
       // return the board
@@ -124,13 +121,63 @@ window.findNQueensSolution = function(n) {
   var range = _.range(0,n);
   // call the function 
   getQueenSolution(range, 0);
-  console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
+  // callonsole.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
   return solution.rows();
 };
 
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
 window.countNQueensSolutions = function(n) {
-  var solution = undefined; //fixme
+    var solution = new Board({'n':n}); 
+    // debugger;
+  // declare a variable for currentRow
+  // create an array to hold key value pairs 
+  var queenStack = []; 
+  var solutionCount =0;
+
+  // create an inner function to get solution 
+  var getQueenCountSolution = function(arr,currentRow){
+    // if array length is 0  
+    if(arr.length === 0){
+      // return the board
+      return; 
+    };
+    // iterate over the array that is passed 
+    for(var i=0; i<arr.length; i++){
+      // debugger;
+      // toggle piece at solution.togglePiece(currentRow,[arr[i]]);
+      solution.togglePiece(currentRow,arr[i]);
+      // check if diagonal conflicts exist 
+      if(!(solution.hasMajorDiagonalConflictAt(arr[i]-currentRow)) && !(solution.hasMinorDiagonalConflictAt(arr[i]+currentRow)) && !(solution.hasRowConflictAt(currentRow))){
+        //declare splice variable
+        var newArr = arr.slice(0,i).concat(arr.slice(i+1));
+        if(newArr.length === 0){
+          solutionCount++;
+          console.log(solution.rows())
+          solution.togglePiece(currentRow,arr[i]); 
+        }
+        // make touple [currentRow,arr[i]] and push to stack 
+        queenStack.push([currentRow,arr[i]]);
+        // recursively call on the spliced array  
+        getQueenCountSolution(newArr,currentRow+1); 
+      }else{
+        // debugger; 
+        solution.togglePiece(currentRow,arr[i]);
+      }
+
+  
+    }
+    // if it goes through for loop untoggle previous position 
+    if(n > 1){
+      var previous = queenStack.pop();
+      if(previous){
+      solution.togglePiece(previous[0],previous[1]);
+      }  
+    }
+  }
+  // create a range from 0 to n 
+  var queenRange = _.range(0,n);
+  // call the function 
+  getQueenCountSolution(queenRange, 0);
 
   console.log('Number of solutions for ' + n + ' queens:', solutionCount);
   return solutionCount;
