@@ -121,7 +121,7 @@ window.findNQueensSolution = function(n) {
   var range = _.range(0,n);
   // call the function 
   getQueenSolution(range, 0);
-  // callonsole.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
+  console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
   return solution.rows();
 };
 
@@ -132,6 +132,7 @@ window.countNQueensSolutions = function(n) {
   // declare a variable for currentRow
   // create an array to hold key value pairs 
   var queenStack = [];
+  var state = true;
   var solutionCount =0;
   if(n === 0) { return 1; }
   // create an inner function to get solution 
@@ -142,16 +143,22 @@ window.countNQueensSolutions = function(n) {
       return;
     }
     // iterate over the array that is passed 
-    for(var i=0; i<arr.length; i++){
-      // debugger;
+    for(var i=0; i<(currentRow === 0 ? Math.ceil(arr.length/2) : arr.length); i++){
+      if(currentRow === 0 && i === Math.floor(arr.length / 2)){
+        state = false;
+      }
       // toggle piece at solution.togglePiece(currentRow,[arr[i]]);
       solution.togglePiece(currentRow,arr[i]);
       // check if diagonal conflicts exist 
-      if(!(solution.hasMajorDiagonalConflictAt(arr[i]-currentRow)) && !(solution.hasMinorDiagonalConflictAt(arr[i]+currentRow)) && !(solution.hasRowConflictAt(currentRow))){
+      if(!(solution.hasMajorDiagonalConflictAt(arr[i]-currentRow)) && !(solution.hasMinorDiagonalConflictAt(arr[i]+currentRow))){
         //declare splice variable
         var newArr = arr.slice(0,i).concat(arr.slice(i+1));
         if(newArr.length === 0){
-          solutionCount++;
+          if(n <= 1 || !state){
+            solutionCount++;
+          } else {
+            solutionCount+=2;
+          }
           solution.togglePiece(currentRow,arr[i]);
           continue;
         }
@@ -182,3 +189,7 @@ window.countNQueensSolutions = function(n) {
   console.log('Number of solutions for ' + n + ' queens:', solutionCount);
   return solutionCount;
 };
+
+
+
+
