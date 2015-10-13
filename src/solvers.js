@@ -74,35 +74,58 @@ window.countNRooksSolutions = function(n) {
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
 window.findNQueensSolution = function(n) {
   var solution = new Board({'n':n}); 
-  // declare a variable for currentRow 
-  var currentRow = 0; 
+  // declare a variable for currentRow
+  // create an array to hold key value pairs 
+  var stack = []; 
+  var state = false;
+
   // create an inner function to get solution 
-  var getQueenSolution = function(arr){
-    // if array length is 0 
+  var getQueenSolution = function(arr,currentRow){
+  if(n === 2){
+    // debugger;
+  }
+    // if array length is 0  
     if(arr.length === 0){
       // return the board
       return; 
     };
     // iterate over the array that is passed 
     for(var i=0; i<arr.length; i++){
+      // debugger;
       // toggle piece at solution.togglePiece(currentRow,[arr[i]]);
       solution.togglePiece(currentRow,arr[i]);
-      if()
       // check if diagonal conflicts exist 
-        // if there is conflict
-          // toggle back to empty
-          // continue to next i 
-        // if there is no conflict 
-          // increment currentRow 
-          // recursively call on the spliced array  
-      
-    }
-    // if it goes through for loop, break; 
-    
-  }
+      if(!(solution.hasMajorDiagonalConflictAt(arr[i]-currentRow)) && !(solution.hasMinorDiagonalConflictAt(arr[i]+currentRow)) && !(solution.hasRowConflictAt(currentRow))){
+        //declare splice variable
+        var newArr = arr.slice(0,i).concat(arr.slice(i+1));
+        if(newArr.length === 0){
+          state = true; 
+        }
+        // make touple [currentRow,arr[i]] and push to stack 
+        stack.push([currentRow,arr[i]]);
+        // recursively call on the spliced array  
+        getQueenSolution(newArr,currentRow+1); 
+      }else{
+        // debugger; 
+        solution.togglePiece(currentRow,arr[i]);
+      }
 
+  
+    }
+    // if it goes through for loop untoggle previous position 
+    if(n > 1 && state === false){
+      var previous = stack.pop();
+      if(previous){
+      solution.togglePiece(previous[0],previous[1]);
+      }  
+    }
+  }
+  // create a range from 0 to n 
+  var range = _.range(0,n);
+  // call the function 
+  getQueenSolution(range, 0);
   console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
-  return solution;
+  return solution.rows();
 };
 
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
